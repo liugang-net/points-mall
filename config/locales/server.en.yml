@@ -1,0 +1,17 @@
+en:
+  site_settings:
+    points_mall_enabled: "Enable the Points Mall plugin. This plugin provides features for managing score events and points mall functionality."
+
+  points_mall:
+    admin:
+      title: "Gamification Extension"
+      score_events:
+        title: "Score Events"
+        not_found: "Score event not found"
+        create_error: "Failed to create score event"
+        update_error: "Failed to update score event"
+        delete_error: "Failed to delete score event"
+        invalid_params: "Invalid parameters provided"
+        user_not_found: "User not found"
+        manual_adjustment: "Manual adjustment by admin"
+

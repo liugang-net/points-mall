@@ -1,0 +1,45 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          points_mall: "Points Mall"
+  js:
+    points_mall:
+      admin:
+        title: "Points Mall"
+        test:
+          title: "Test Page"
+          description: "This is a simple test page without any data operations."
+        score_events:
+          title: "Score Events"
+          add: "Add Score Event"
+          edit: "Edit Score Event"
+          delete: "Delete"
+          user_id: "User ID"
+          username: "Username"
+          date: "Date"
+          start_date: "Start Date"
+          end_date: "End Date"
+          points: "Points"
+          description: "Description"
+          actions: "Actions"
+          created_at: "Created At"
+          no_events: "No score events found"
+          add_success: "Score event added successfully"
+          update_success: "Score event updated successfully"
+          delete_success: "Score event deleted successfully"
+          delete_confirm: "Are you sure you want to delete this score event?"
+          search: "Search"
+          clear: "Clear"
+          page_info: "Page"
+          total: "total"
+          prev: "Previous"
+          next: "Next"
+          user_id_required: "User ID is required"
+          date_required: "Date is required"
+          points_required: "Points is required"
+          points_hint: "Positive number to add points, negative number to deduct points"
+          save: "Save"
+          cancel: "Cancel"
+

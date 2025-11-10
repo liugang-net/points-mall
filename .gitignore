@@ -1,0 +1,11 @@
+# Zone.Identifier files (Windows security zone files)
+*.Identifier
+*:Zone.Identifier
+
+# Common ignore patterns
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+

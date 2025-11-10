@@ -1,0 +1,45 @@
+zh_CN:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          points_mall: "积分商城"
+  js:
+    points_mall:
+      admin:
+        title: "积分商城"
+        test:
+          title: "测试页面"
+          description: "这是一个简单的测试页面，不涉及任何数据操作。"
+        score_events:
+          title: "积分事件"
+          add: "添加积分事件"
+          edit: "编辑积分事件"
+          delete: "删除"
+          user_id: "用户ID"
+          username: "用户名"
+          date: "日期"
+          start_date: "开始日期"
+          end_date: "结束日期"
+          points: "积分"
+          description: "描述"
+          actions: "操作"
+          created_at: "创建时间"
+          no_events: "没有找到积分事件"
+          add_success: "积分事件添加成功"
+          update_success: "积分事件更新成功"
+          delete_success: "积分事件删除成功"
+          delete_confirm: "确定要删除这个积分事件吗？"
+          search: "搜索"
+          clear: "清除"
+          page_info: "第"
+          total: "条"
+          prev: "上一页"
+          next: "下一页"
+          user_id_required: "用户ID是必填项"
+          date_required: "日期是必填项"
+          points_required: "积分是必填项"
+          points_hint: "正数表示增加积分，负数表示扣减积分"
+          save: "保存"
+          cancel: "取消"
+

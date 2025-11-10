@@ -1,0 +1,7 @@
+points_mall:
+  points_mall_enabled:
+    default: true
+    client: true
+  test_value:
+    default: 1
+

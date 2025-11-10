@@ -1,0 +1,17 @@
+zh_CN:
+  site_settings:
+    points_mall_enabled: "启用积分商城插件。此插件提供管理积分事件和积分商城功能。"
+
+  points_mall:
+    admin:
+      title: "游戏化扩展"
+      score_events:
+        title: "积分事件"
+        not_found: "未找到积分事件"
+        create_error: "创建积分事件失败"
+        update_error: "更新积分事件失败"
+        delete_error: "删除积分事件失败"
+        invalid_params: "提供的参数无效"
+        user_not_found: "用户未找到"
+        manual_adjustment: "管理员手动调整"
+
