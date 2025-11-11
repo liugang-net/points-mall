@@ -58,10 +58,12 @@ class PointsMall::AdminScoreEventController < Admin::AdminController
       )
 
     if event.save
-      # 同步重新计算该用户的积分
-      PointsMall::UserScoreCalculator.recalculate_user_score(user_id: user.id)
+      # 同步重新计算该用户的积分（只重新计算事件发生当天的积分，更高效）
+      PointsMall::UserScoreCalculator.recalculate_user_score(user_id: user.id, date: event.date)
       # 异步刷新 leaderboard positions
-      Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: user.id)
+      if defined?(Jobs::RefreshUserLeaderboards)
+        Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: user.id)
+      end
       render_serialized(event, PointsMall::AdminScoreEventSerializer, root: false)
     else
       render_json_error(event)
@@ -80,11 +82,13 @@ class PointsMall::AdminScoreEventController < Admin::AdminController
     event.description = params[:description] if params[:description].present?
 
     if event.save
-      # 如果积分发生变化，同步重新计算该用户的积分
+      # 如果积分发生变化，同步重新计算该用户的积分（只重新计算事件发生当天的积分，更高效）
       if old_points != event.points
-        PointsMall::UserScoreCalculator.recalculate_user_score(user_id: event.user_id)
+        PointsMall::UserScoreCalculator.recalculate_user_score(user_id: event.user_id, date: event.date)
         # 异步刷新 leaderboard positions
-        Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: event.user_id)
+        if defined?(Jobs::RefreshUserLeaderboards)
+          Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: event.user_id)
+        end
       end
       render_serialized(event, PointsMall::AdminScoreEventSerializer, root: false)
     else
@@ -99,11 +103,14 @@ class PointsMall::AdminScoreEventController < Admin::AdminController
     raise Discourse::NotFound unless event
 
     user_id = event.user_id
+    event_date = event.date
     if event.destroy
-      # 同步重新计算该用户的积分
-      PointsMall::UserScoreCalculator.recalculate_user_score(user_id: user_id)
+      # 同步重新计算该用户的积分（只重新计算事件发生当天的积分，更高效）
+      PointsMall::UserScoreCalculator.recalculate_user_score(user_id: user_id, date: event_date)
       # 异步刷新 leaderboard positions
-      Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: user_id)
+      if defined?(Jobs::RefreshUserLeaderboards)
+        Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: user_id)
+      end
       render json: success_json
     else
       render_json_error(event)

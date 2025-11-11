@@ -127,12 +127,14 @@ export default RouteTemplate(
                         <DButton
                           @label="points_mall.admin.score_events.edit"
                           @action={{fn @controller.editEvent event}}
+                          @disabled={{true}}
                           class="btn-small btn-text"
                         />
                         <DButton
                           @icon="trash-can"
                           @title="points_mall.admin.score_events.delete"
                           @action={{fn @controller.deleteEvent event}}
+                          @disabled={{true}}
                           class="btn-small btn-danger"
                         />
                       </div>

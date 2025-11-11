@@ -15,6 +15,14 @@ export default {
                     label: "points_mall.admin.score_events.title",
                     route: "adminPlugins.show.points-mall-score-events",
                 },
+                {
+                    label: "points_mall.admin.products.title",
+                    route: "adminPlugins.show.points-mall-products",
+                },
+                {
+                    label: "points_mall.admin.orders.title",
+                    route: "adminPlugins.show.points-mall-orders",
+                },
             ]);
         });
     },

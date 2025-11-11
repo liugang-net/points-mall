@@ -230,16 +230,17 @@ export default class AdminScoreEventForm extends Component {
                 type="date"
                 value={{this.date}}
                 required={{true}}
-                {{on "input" this.updateDate}}
+                disabled={{true}}
                 class="score-event-form-input"
                 style="
                   padding: 10px 12px;
                   border: 1px solid var(--primary-low);
                   border-radius: 4px;
                   font-size: 14px;
-                  background: var(--secondary);
-                  color: var(--primary);
+                  background: var(--primary-low);
+                  color: var(--primary-medium);
                   transition: border-color 0.2s;
+                  cursor: not-allowed;
                 "
               />
             </label>

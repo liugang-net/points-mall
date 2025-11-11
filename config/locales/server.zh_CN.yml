@@ -14,4 +14,22 @@ zh_CN:
         invalid_params: "提供的参数无效"
         user_not_found: "用户未找到"
         manual_adjustment: "管理员手动调整"
+      products:
+        title: "商品管理"
+        not_found: "未找到商品"
+        create_error: "创建商品失败"
+        update_error: "更新商品失败"
+        delete_error: "删除商品失败"
+        has_orders: "该商品已有订单，无法删除"
+      orders:
+        title: "订单管理"
+        not_found: "未找到订单"
+        cannot_ship: "订单状态不允许发货"
+        cannot_complete: "订单状态不允许完成"
+        cannot_cancel: "订单状态不允许取消"
+        refund_description: "订单取消，返还积分：%{product_name}"
+    orders:
+      product_unavailable: "商品不可用或库存不足"
+      insufficient_points: "积分不足，需要 %{required} 积分，当前有 %{current} 积分"
+      purchase_description: "兑换商品：%{product_name} x %{quantity}"
 

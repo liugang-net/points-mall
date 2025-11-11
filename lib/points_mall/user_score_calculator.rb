@@ -4,28 +4,35 @@ module PointsMall
   class UserScoreCalculator
     # 重新计算单个用户的积分（同步执行）
     # @param user_id [Integer] 用户ID
+    # @param date [Date, nil] 要重新计算的日期，如果为 nil 则计算整个时间范围
     # @return [Boolean] 是否成功执行
-    def self.recalculate_user_score(user_id:)
+    def self.recalculate_user_score(user_id:, date: nil)
       return false unless defined?(DiscourseGamification::GamificationScore)
 
       user = User.find_by(id: user_id)
       return false unless user&.active?
 
-      # 获取第一个 leaderboard 的时间范围设置
-      leaderboard = DiscourseGamification::GamificationLeaderboard.order(:id).first if defined?(DiscourseGamification::GamificationLeaderboard)
-      
-      # 确定计算的时间范围
-      # 如果 leaderboard 有 from_date，则从 from_date 开始；否则从用户最早的事件日期或10天前开始
-      if leaderboard&.from_date
-        since_date = leaderboard.from_date
+      # 如果指定了日期，只重新计算那一天的积分（更高效）
+      if date
+        since_date = date
+        to_date = date
       else
-        earliest_event =
-          DiscourseGamification::GamificationScoreEvent.where(user_id: user_id).minimum(:date)
-        since_date = earliest_event || 10.days.ago.to_date
-      end
+        # 获取第一个 leaderboard 的时间范围设置
+        leaderboard = DiscourseGamification::GamificationLeaderboard.order(:id).first if defined?(DiscourseGamification::GamificationLeaderboard)
+        
+        # 确定计算的时间范围
+        # 如果 leaderboard 有 from_date，则从 from_date 开始；否则从用户最早的事件日期或10天前开始
+        if leaderboard&.from_date
+          since_date = leaderboard.from_date
+        else
+          earliest_event =
+            DiscourseGamification::GamificationScoreEvent.where(user_id: user_id).minimum(:date)
+          since_date = earliest_event || 10.days.ago.to_date
+        end
 
-      # 确定结束日期（如果 leaderboard 有 to_date，则只计算到 to_date；否则计算所有时间）
-      to_date = leaderboard&.to_date
+        # 确定结束日期（如果 leaderboard 有 to_date，则只计算到 to_date；否则计算所有时间）
+        to_date = leaderboard&.to_date
+      end
 
       # 获取所有启用的积分规则查询
       queries = DiscourseGamification::GamificationScore.enabled_scorables.map { "( #{_1.query} )" }.join(" UNION ALL ")
