@@ -43,3 +43,43 @@ en:
           save: "Save"
           cancel: "Cancel"
 
+      products:
+        points_required: "Points required"
+
+      orders:
+        title: "My Orders"
+        order_id: "Order ID"
+        product: "Product"
+        quantity: "Quantity"
+        points_spent: "Points Spent"
+        status: "Status"
+        shipping_company: "Carrier"
+        shipping_number: "Tracking number"
+        recipient_name: "Recipient"
+        recipient_phone: "Phone"
+        recipient_address: "Address"
+        user_notes: "Notes"
+        created_at: "Placed At"
+        shipped_at: "Shipped At"
+        completed_at: "Completed At"
+        status_pending: "Pending"
+        status_shipped: "Shipped"
+        status_completed: "Completed"
+        status_cancelled: "Cancelled"
+        no_orders: "You have no orders yet"
+
+      user:
+        orders:
+          nav: "Points Orders"
+          title: "My Points Orders"
+          view_details: "View details"
+          back: "Back to my orders"
+          status_filter: "Status filter"
+          status_all: "All statuses"
+          product_info: "Product information"
+          shipping_info: "Logistics information"
+          recipient_info: "Shipping information"
+          detail_title: "Order"
+          prev: "Previous"
+          next: "Next"
+

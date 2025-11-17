@@ -7,6 +7,10 @@ class PointsMall::OrderSerializer < ApplicationSerializer
              :points_spent,
              :total_points_spent,
              :status,
+             :shipping_company,
+             :shipping_number,
+             :product_name,
+             :product_description,
              :recipient_name,
              :recipient_phone,
              :recipient_address,
@@ -29,11 +33,20 @@ class PointsMall::OrderSerializer < ApplicationSerializer
 
   # 返回用户当前积分（兑换后的最新积分）
   def user_current_score
-    if defined?(DiscourseGamification::GamificationScore)
+    return 0 unless defined?(DiscourseGamification::GamificationScore)
+
+    @user_score_cache ||= {}
+    @user_score_cache[object.user_id] ||= begin
       DiscourseGamification::GamificationScore.where(user_id: object.user_id).sum(:score) || 0
-    else
-      0
     end
+  end
+
+  def product_name
+    object.product&.name
+  end
+
+  def product_description
+    object.product&.description
   end
 end
 

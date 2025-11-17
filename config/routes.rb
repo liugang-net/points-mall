@@ -9,10 +9,22 @@ PointsMall::Engine.routes.draw do
   # API 路由
   post "/orders" => "order#create"
   get "/orders/my" => "order#my_orders"
+  get "/orders/:id" => "order#show"
 end
 
 Discourse::Application.routes.draw do
   mount ::PointsMall::Engine, at: "/points-mall"
+
+  %w[users u].each do |root_path|
+    get "#{root_path}/:username/points-mall/orders" => "points_mall/user_page#orders",
+        constraints: { username: RouteFormat.username }
+
+    get "#{root_path}/:username/points-mall/orders/:order_id" => "points_mall/user_page#orders",
+        constraints: {
+          username: RouteFormat.username,
+          order_id: /\d+/,
+        }
+  end
 
   # 管理员积分事件管理路由（仅管理员可访问）
   scope "/admin/plugins/points-mall", constraints: AdminConstraint.new do

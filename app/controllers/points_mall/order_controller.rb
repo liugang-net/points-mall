@@ -95,7 +95,10 @@ class PointsMall::OrderController < ::ApplicationController
   def my_orders
     params.permit(%i[page limit status])
 
-    orders = PointsMall::Order.where(user_id: current_user.id).includes(:product)
+    orders =
+      PointsMall::Order
+        .where(user_id: current_user.id)
+        .includes(product: :upload)
 
     orders = orders.where(status: params[:status]) if params[:status].present?
 
@@ -113,6 +116,20 @@ class PointsMall::OrderController < ::ApplicationController
       PointsMall::OrderIndexSerializer,
       root: false,
     )
+  end
+
+  def show
+    params.require(:id)
+
+    order =
+      PointsMall::Order
+        .where(user_id: current_user.id, id: params[:id])
+        .includes(product: :upload)
+        .first
+
+    raise Discourse::NotFound unless order
+
+    render_serialized(order, PointsMall::OrderSerializer, root: false)
   end
 end
 
