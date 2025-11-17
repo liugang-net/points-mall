@@ -10,12 +10,21 @@ export default class AdminOrderDetailsModal extends Component {
   @tracked adminNotes = "";
   @tracked shippingCompany = "";
   @tracked shippingNumber = "";
+  @tracked redemptionInfo = "";
 
   constructor() {
     super(...arguments);
     this.adminNotes = this.args.order?.admin_notes || "";
     this.shippingCompany = this.args.order?.shipping_company || "";
     this.shippingNumber = this.args.order?.shipping_number || "";
+    this.redemptionInfo = this.args.order?.redemption_info || "";
+  }
+
+  get isVirtualOrder() {
+    return (
+      this.args.order?.product?.product_type === "virtual" ||
+      this.args.order?.product_type === "virtual"
+    );
   }
 
   @action
@@ -34,11 +43,17 @@ export default class AdminOrderDetailsModal extends Component {
   }
 
   @action
+  updateRedemptionInfo(event) {
+    this.redemptionInfo = event.target.value;
+  }
+
+  @action
   async saveOrder() {
     await this.args.onUpdateOrder(this.args.order, {
       admin_notes: this.adminNotes,
       shipping_company: this.shippingCompany,
       shipping_number: this.shippingNumber,
+      redemption_info: this.redemptionInfo,
     });
     this.args.onClose();
   }
@@ -64,26 +79,38 @@ export default class AdminOrderDetailsModal extends Component {
           {{#if @order.user_notes}}
             <div><strong>{{i18n "points_mall.admin.orders.user_notes"}}:</strong> {{@order.user_notes}}</div>
           {{/if}}
-          <div>
-            <strong>{{i18n "points_mall.admin.orders.shipping_company"}}:</strong>
-            <input
-              type="text"
-              value={{this.shippingCompany}}
-              placeholder={{i18n "points_mall.admin.orders.shipping_company_placeholder"}}
-              {{on "input" this.updateShippingCompany}}
-              style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; margin-top: 8px;"
-            />
-          </div>
-          <div>
-            <strong>{{i18n "points_mall.admin.orders.shipping_number"}}:</strong>
-            <input
-              type="text"
-              value={{this.shippingNumber}}
-              placeholder={{i18n "points_mall.admin.orders.shipping_number_placeholder"}}
-              {{on "input" this.updateShippingNumber}}
-              style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; margin-top: 8px;"
-            />
-          </div>
+          {{#if this.isVirtualOrder}}
+            <div>
+              <strong>{{i18n "points_mall.admin.orders.redemption_info"}}:</strong>
+              <textarea
+                value={{this.redemptionInfo}}
+                placeholder={{i18n "points_mall.admin.orders.redemption_info_placeholder"}}
+                {{on "input" this.updateRedemptionInfo}}
+                style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; margin-top: 8px;"
+              ></textarea>
+            </div>
+          {{else}}
+            <div>
+              <strong>{{i18n "points_mall.admin.orders.shipping_company"}}:</strong>
+              <input
+                type="text"
+                value={{this.shippingCompany}}
+                placeholder={{i18n "points_mall.admin.orders.shipping_company_placeholder"}}
+                {{on "input" this.updateShippingCompany}}
+                style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; margin-top: 8px;"
+              />
+            </div>
+            <div>
+              <strong>{{i18n "points_mall.admin.orders.shipping_number"}}:</strong>
+              <input
+                type="text"
+                value={{this.shippingNumber}}
+                placeholder={{i18n "points_mall.admin.orders.shipping_number_placeholder"}}
+                {{on "input" this.updateShippingNumber}}
+                style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; margin-top: 8px;"
+              />
+            </div>
+          {{/if}}
           <div>
             <strong>{{i18n "points_mall.admin.orders.admin_notes"}}:</strong>
             <textarea

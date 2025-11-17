@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
 class PointsMall::ProductSerializer < ApplicationSerializer
-  attributes :id, :name, :description, :upload_id, :stock, :points_required, :created_at, :can_purchase, :available
+  attributes :id,
+             :name,
+             :description,
+             :upload_id,
+             :stock,
+             :points_required,
+             :product_type,
+             :created_at,
+             :can_purchase,
+             :available
 
   has_one :upload, serializer: UploadSerializer, embed: :objects
 

@@ -7,6 +7,7 @@ class PointsMall::AdminProductSerializer < ApplicationSerializer
              :upload_id,
              :stock,
              :points_required,
+             :product_type,
              :active,
              :sort_order,
              :created_by_id,

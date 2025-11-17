@@ -300,6 +300,30 @@
     }
 }
 
+.product-form-container {
+    .uppy-image-uploader {
+        width: 100%;
+
+        .image-uploader-preview {
+            width: 100%;
+            min-height: 180px;
+            border: 1px dashed var(--primary-low);
+            border-radius: 4px;
+            background: var(--primary-very-low);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+}
+
 .points-mall-user-orders {
     padding: 24px;
 
@@ -575,6 +599,26 @@
                 margin: 4px 0 0;
                 color: var(--primary-medium);
             }
+        }
+
+        &__redemption,
+        &__redemption-link {
+            display: block;
+            padding: 12px;
+            border-radius: 6px;
+            background: var(--primary-very-low);
+            color: var(--primary);
+            word-break: break-all;
+        }
+
+        &__redemption-link {
+            text-decoration: underline;
+            color: var(--tertiary);
+        }
+
+        &__redemption--pending {
+            color: var(--primary-medium);
+            font-style: italic;
         }
     }
 }

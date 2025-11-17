@@ -6,14 +6,25 @@ class PointsMall::OrderController < ::ApplicationController
   before_action :ensure_logged_in
 
   def create
-    params.require(%i[product_id quantity recipient_name recipient_phone recipient_address])
-    params.permit(:user_notes)
+    params.require(%i[product_id quantity])
+    params.permit(:recipient_name, :recipient_phone, :recipient_address, :user_notes)
 
     product = PointsMall::Product.find_by(id: params[:product_id])
     raise Discourse::NotFound unless product
 
     quantity = params[:quantity].to_i
     raise Discourse::InvalidParameters.new(:quantity) if quantity <= 0
+
+    requires_shipping = product.physical?
+
+    if requires_shipping
+      %i[recipient_name recipient_phone recipient_address].each do |field|
+        next if params[field].present?
+        raise Discourse::InvalidParameters.new(
+                I18n.t("points_mall.orders.missing_recipient_info"),
+              )
+      end
+    end
 
     # 检查商品是否可购买
     unless product.can_purchase?(quantity)
@@ -58,9 +69,9 @@ class PointsMall::OrderController < ::ApplicationController
           product_id: product.id,
           quantity: quantity,
           points_spent: product.points_required,
-          recipient_name: params[:recipient_name],
-          recipient_phone: params[:recipient_phone],
-          recipient_address: params[:recipient_address],
+          recipient_name: requires_shipping ? params[:recipient_name] : nil,
+          recipient_phone: requires_shipping ? params[:recipient_phone] : nil,
+          recipient_address: requires_shipping ? params[:recipient_address] : nil,
           user_notes: params[:user_notes],
           status: PointsMall::Order.statuses[:pending],
         )

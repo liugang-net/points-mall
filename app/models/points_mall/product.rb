@@ -15,6 +15,9 @@ module PointsMall
     validates :stock, presence: true, numericality: { greater_than_or_equal_to: 0 }
     validates :points_required, presence: true, numericality: { greater_than: 0 }
     validates :created_by_id, presence: true
+    validates :product_type, presence: true
+
+    enum :product_type, { physical: 0, virtual: 1 }
 
     scope :active, -> { where(active: true) }
     scope :ordered, -> { order(sort_order: :asc, created_at: :desc) }

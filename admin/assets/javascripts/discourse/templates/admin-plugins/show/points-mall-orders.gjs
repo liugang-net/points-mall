@@ -224,31 +224,45 @@ export default RouteTemplate(
               </div>
 
               <div class="ship-modal__form" style="display: flex; flex-direction: column; gap: 16px;">
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.admin.orders.shipping_company"}}
-                  </label>
-                  <input
-                    type="text"
-                    value={{@controller.shippingCompany}}
-                    placeholder={{i18n "points_mall.admin.orders.shipping_company_placeholder"}}
-                    {{on "input" @controller.updateShippingCompany}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
-                  />
-                </div>
+                {{#if @controller.shippingOrderIsVirtual}}
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.admin.orders.redemption_info"}}
+                    </label>
+                    <textarea
+                      value={{@controller.redemptionInfo}}
+                      placeholder={{i18n "points_mall.admin.orders.redemption_info_placeholder"}}
+                      {{on "input" @controller.updateRedemptionInfo}}
+                      style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
+                    ></textarea>
+                  </div>
+                {{else}}
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.admin.orders.shipping_company"}}
+                    </label>
+                    <input
+                      type="text"
+                      value={{@controller.shippingCompany}}
+                      placeholder={{i18n "points_mall.admin.orders.shipping_company_placeholder"}}
+                      {{on "input" @controller.updateShippingCompany}}
+                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
+                    />
+                  </div>
 
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.admin.orders.shipping_number"}}
-                  </label>
-                  <input
-                    type="text"
-                    value={{@controller.shippingNumber}}
-                    placeholder={{i18n "points_mall.admin.orders.shipping_number_placeholder"}}
-                    {{on "input" @controller.updateShippingNumber}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
-                  />
-                </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.admin.orders.shipping_number"}}
+                    </label>
+                    <input
+                      type="text"
+                      value={{@controller.shippingNumber}}
+                      placeholder={{i18n "points_mall.admin.orders.shipping_number_placeholder"}}
+                      {{on "input" @controller.updateShippingNumber}}
+                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
+                    />
+                  </div>
+                {{/if}}
               </div>
 
               <div style="display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end;">

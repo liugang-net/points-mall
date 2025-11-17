@@ -22,6 +22,7 @@ export default class PointsMallOrdersController extends Controller {
     @tracked shippingOrder = null;
     @tracked shippingCompany = "";
     @tracked shippingNumber = "";
+  @tracked redemptionInfo = "";
 
     // 查询条件
     @tracked searchUserId = "";
@@ -61,6 +62,10 @@ export default class PointsMallOrdersController extends Controller {
     get displayOrdersLength() {
         return this.displayOrders.length;
     }
+
+  get shippingOrderIsVirtual() {
+    return this.shippingOrder?.product?.product_type === "virtual";
+  }
 
     get displayTotal() {
         return this.total ?? 0;
@@ -170,6 +175,7 @@ export default class PointsMallOrdersController extends Controller {
         this.shippingOrder = order;
         this.shippingCompany = order.shipping_company || "";
         this.shippingNumber = order.shipping_number || "";
+    this.redemptionInfo = order.redemption_info || "";
         this.showShipModal = true;
     }
 
@@ -179,6 +185,7 @@ export default class PointsMallOrdersController extends Controller {
         this.shippingOrder = null;
         this.shippingCompany = "";
         this.shippingNumber = "";
+    this.redemptionInfo = "";
     }
 
     @action
@@ -191,18 +198,49 @@ export default class PointsMallOrdersController extends Controller {
         this.shippingNumber = event.target.value;
     }
 
+  @action
+  updateRedemptionInfo(event) {
+    this.redemptionInfo = event.target.value;
+  }
+
     @action
     async confirmShip() {
         if (!this.shippingOrder) return;
 
         try {
+      const data = {
+        status: 1,
+      };
+
+      if (this.shippingOrderIsVirtual) {
+        const info = this.redemptionInfo?.trim();
+        if (!info) {
+          this.toasts.error({
+            duration: 3000,
+            data: {
+              message: i18n("points_mall.admin.orders.redemption_info_required"),
+            },
+          });
+          return;
+        }
+        data.redemption_info = info;
+      } else {
+        if (!this.shippingCompany?.trim() || !this.shippingNumber?.trim()) {
+          this.toasts.error({
+            duration: 3000,
+            data: {
+              message: i18n("points_mall.admin.orders.shipping_info_required"),
+            },
+          });
+          return;
+        }
+        data.shipping_company = this.shippingCompany.trim();
+        data.shipping_number = this.shippingNumber.trim();
+      }
+
             await ajax(`/admin/plugins/points-mall/orders/${this.shippingOrder.id}/status`, {
                 type: "PUT",
-                data: {
-                    status: 1,
-                    shipping_company: this.shippingCompany.trim() || null,
-                    shipping_number: this.shippingNumber.trim() || null,
-                },
+        data,
             });
 
             this.toasts.success({

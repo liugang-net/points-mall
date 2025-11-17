@@ -20,6 +20,7 @@ export default class AdminProductForm extends Component {
   @tracked pointsRequired = "";
   @tracked active = true;
   @tracked sortOrder = "";
+  @tracked productType = "physical";
   @tracked loading = false;
 
   constructor() {
@@ -34,6 +35,7 @@ export default class AdminProductForm extends Component {
       this.pointsRequired = this.args.product.points_required?.toString() || "";
       this.active = this.args.product.active !== false;
       this.sortOrder = this.args.product.sort_order?.toString() || "0";
+      this.productType = this.args.product.product_type || "physical";
     }
   }
 
@@ -82,6 +84,7 @@ export default class AdminProductForm extends Component {
         points_required: parseInt(this.pointsRequired),
         active: this.active,
         sort_order: parseInt(this.sortOrder) || 0,
+        product_type: this.productType || "physical",
       };
 
       if (this.isEditMode) {
@@ -129,6 +132,11 @@ export default class AdminProductForm extends Component {
   @action
   updateSortOrder(event) {
     this.sortOrder = event.target.value;
+  }
+
+  @action
+  updateProductType(event) {
+    this.productType = event.target.value;
   }
 
   <template>
@@ -198,6 +206,45 @@ export default class AdminProductForm extends Component {
                 transition: border-color 0.2s;
               "
             />
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              font-weight: 500;
+              color: var(--primary);
+              font-size: 14px;
+            "
+          >
+            {{i18n "points_mall.admin.products.product_type"}}
+            <select
+              value={{this.productType}}
+              {{on "change" this.updateProductType}}
+              class="product-form-input"
+              style="
+                padding: 10px 12px;
+                border: 1px solid var(--primary-low);
+                border-radius: 4px;
+                font-size: 14px;
+                background: var(--secondary);
+                color: var(--primary);
+                transition: border-color 0.2s;
+              "
+            >
+              <option value="physical">
+                {{i18n "points_mall.admin.products.product_type_physical"}}
+              </option>
+              <option value="virtual">
+                {{i18n "points_mall.admin.products.product_type_virtual"}}
+              </option>
+            </select>
+            <span style="font-size: 12px; color: var(--primary-medium);">
+              {{i18n "points_mall.admin.products.product_type_hint"}}
+            </span>
           </label>
         </div>
 

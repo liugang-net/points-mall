@@ -14,4 +14,9 @@ en:
         invalid_params: "Invalid parameters provided"
         user_not_found: "User not found"
         manual_adjustment: "Manual adjustment by admin"
+      orders:
+        shipping_info_required: "Please provide both a shipping company and tracking number."
+        redemption_info_required: "Please provide redemption details for virtual items."
+    orders:
+      missing_recipient_info: "Please provide recipient name, phone number, and address."
 

@@ -46,7 +46,7 @@ class PointsMall::AdminOrderController < Admin::AdminController
 
   def update_status
     params.require(%i[id status])
-    params.permit(:shipping_company, :shipping_number)
+    params.permit(:shipping_company, :shipping_number, :redemption_info)
 
     order = PointsMall::Order.find_by(id: params[:id])
     raise Discourse::NotFound unless order
@@ -62,8 +62,26 @@ class PointsMall::AdminOrderController < Admin::AdminController
         raise Discourse::InvalidParameters.new(I18n.t("points_mall.admin.orders.cannot_ship"))
       end
       order.shipped_at = Time.current
-      order.shipping_company = params[:shipping_company] if params[:shipping_company].present?
-      order.shipping_number = params[:shipping_number] if params[:shipping_number].present?
+
+      if order.virtual_product?
+        redemption_info = params[:redemption_info].presence
+        if redemption_info.blank?
+          raise Discourse::InvalidParameters.new(
+                  I18n.t("points_mall.admin.orders.redemption_info_required"),
+                )
+        end
+        order.redemption_info = redemption_info
+        order.shipping_company = nil
+        order.shipping_number = nil
+      else
+        if params[:shipping_company].blank? || params[:shipping_number].blank?
+          raise Discourse::InvalidParameters.new(
+                  I18n.t("points_mall.admin.orders.shipping_info_required"),
+                )
+        end
+        order.shipping_company = params[:shipping_company]
+        order.shipping_number = params[:shipping_number]
+      end
     when PointsMall::Order.statuses[:completed]
       unless order.can_complete?
         raise Discourse::InvalidParameters.new(I18n.t("points_mall.admin.orders.cannot_complete"))
@@ -103,7 +121,7 @@ class PointsMall::AdminOrderController < Admin::AdminController
 
   def update
     params.require(:id)
-    params.permit(:admin_notes, :shipping_company, :shipping_number)
+    params.permit(:admin_notes, :shipping_company, :shipping_number, :redemption_info)
 
     order = PointsMall::Order.find_by(id: params[:id])
     raise Discourse::NotFound unless order
@@ -111,6 +129,7 @@ class PointsMall::AdminOrderController < Admin::AdminController
     order.admin_notes = params[:admin_notes] if params[:admin_notes].present?
     order.shipping_company = params[:shipping_company] if params[:shipping_company].present?
     order.shipping_number = params[:shipping_number] if params[:shipping_number].present?
+    order.redemption_info = params[:redemption_info] if params.key?(:redemption_info)
 
     if order.save
       render_serialized(order, PointsMall::AdminOrderSerializer, root: false)

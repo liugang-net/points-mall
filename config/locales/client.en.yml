@@ -43,8 +43,21 @@ en:
           save: "Save"
           cancel: "Cancel"
 
+        products:
+          product_type: "Product type"
+          product_type_physical: "Physical item (requires shipping)"
+          product_type_virtual: "Virtual item"
+          product_type_hint: "Virtual items do not require recipient information and will be delivered digitally."
+
+        orders:
+          redemption_info: "Redemption details"
+          redemption_info_placeholder: "Enter pickup code, download link, or other delivery instructions"
+          redemption_info_required: "Please provide redemption details before shipping virtual items."
+          shipping_info_required: "Please provide both a carrier and tracking number."
+
       products:
         points_required: "Points required"
+        virtual_delivery_hint: "This is a virtual item. No shipping details are required; redemption information will appear in your order once processed."
 
       orders:
         title: "My Orders"
@@ -59,6 +72,7 @@ en:
         recipient_phone: "Phone"
         recipient_address: "Address"
         user_notes: "Notes"
+        admin_notes: "Admin notes"
         created_at: "Placed At"
         shipped_at: "Shipped At"
         completed_at: "Completed At"
@@ -67,6 +81,8 @@ en:
         status_completed: "Completed"
         status_cancelled: "Cancelled"
         no_orders: "You have no orders yet"
+        redemption_info: "Redemption details"
+        redemption_pending: "Redemption details will be provided once the order is processed."
 
       user:
         orders:
@@ -78,6 +94,7 @@ en:
           status_all: "All statuses"
           product_info: "Product information"
           shipping_info: "Logistics information"
+          redemption_info: "Redemption details"
           recipient_info: "Shipping information"
           detail_title: "Order"
           prev: "Previous"

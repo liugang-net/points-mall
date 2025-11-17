@@ -12,5 +12,23 @@ export default class UserPointsMallOrderController extends Controller {
 
     return formatNumber(value, { maxDisplay: 1000000 });
   }
+
+  get isVirtualOrder() {
+    const type =
+      this.order?.product_type || this.order?.product?.product_type || "physical";
+    return type === "virtual";
+  }
+
+  get hasRedemptionInfo() {
+    return !!this.order?.redemption_info?.trim();
+  }
+
+  get redemptionInfoIsLink() {
+    if (!this.hasRedemptionInfo) {
+      return false;
+    }
+
+    return /^https?:\/\//i.test(this.order.redemption_info.trim());
+  }
 }
 

@@ -11,9 +11,12 @@ module PointsMall
     validates :product_id, presence: true
     validates :quantity, presence: true, numericality: { greater_than: 0 }
     validates :points_spent, presence: true, numericality: { greater_than: 0 }
-    validates :recipient_name, presence: true
-    validates :recipient_phone, presence: true
-    validates :recipient_address, presence: true
+    validates :recipient_name, presence: true, if: :requires_shipping_info?
+    validates :recipient_phone, presence: true, if: :requires_shipping_info?
+    validates :recipient_address, presence: true, if: :requires_shipping_info?
+    validate :redemption_info_presence_for_virtual_shipments
+
+    delegate :product_type, :physical?, :virtual?, to: :product, prefix: true, allow_nil: true
 
     enum :status, {
       pending: 0,    # 待发货
@@ -28,6 +31,18 @@ module PointsMall
       points_spent * quantity
     end
 
+    def virtual_product?
+      product&.virtual?
+    end
+
+    def requires_shipping_info?
+      !virtual_product?
+    end
+
+    def requires_redemption_info?
+      virtual_product? && (shipped? || completed?)
+    end
+
     def can_cancel?
       pending?
     end
@@ -38,6 +53,13 @@ module PointsMall
 
     def can_complete?
       shipped?
+    end
+
+    private
+
+    def redemption_info_presence_for_virtual_shipments
+      return unless requires_redemption_info?
+      errors.add(:redemption_info, :blank) if redemption_info.blank?
     end
   end
 end

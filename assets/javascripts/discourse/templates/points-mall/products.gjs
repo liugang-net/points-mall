@@ -82,47 +82,56 @@ export default RouteTemplate(
                   />
                 </div>
 
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.products.recipient_name"}} <span style="color: red;">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={{@controller.recipientName}}
-                    placeholder={{i18n "points_mall.products.recipient_name"}}
-                    required={{true}}
-                    {{on "input" @controller.updateRecipientName}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
-                  />
-                </div>
+                {{#if @controller.requiresShipping}}
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.products.recipient_name"}} <span style="color: red;">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={{@controller.recipientName}}
+                      placeholder={{i18n "points_mall.products.recipient_name"}}
+                      required={{true}}
+                      {{on "input" @controller.updateRecipientName}}
+                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
+                    />
+                  </div>
 
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.products.recipient_phone"}} <span style="color: red;">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={{@controller.recipientPhone}}
-                    placeholder={{i18n "points_mall.products.recipient_phone"}}
-                    required={{true}}
-                    {{on "input" @controller.updateRecipientPhone}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
-                  />
-                </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.products.recipient_phone"}} <span style="color: red;">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={{@controller.recipientPhone}}
+                      placeholder={{i18n "points_mall.products.recipient_phone"}}
+                      required={{true}}
+                      {{on "input" @controller.updateRecipientPhone}}
+                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
+                    />
+                  </div>
 
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.products.recipient_address"}} <span style="color: red;">*</span>
-                  </label>
-                  <textarea
-                    value={{@controller.recipientAddress}}
-                    placeholder={{i18n "points_mall.products.recipient_address"}}
-                    required={{true}}
-                    rows="3"
-                    {{on "input" @controller.updateRecipientAddress}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; resize: vertical;"
-                  ></textarea>
-                </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
+                      {{i18n "points_mall.products.recipient_address"}} <span style="color: red;">*</span>
+                    </label>
+                    <textarea
+                      value={{@controller.recipientAddress}}
+                      placeholder={{i18n "points_mall.products.recipient_address"}}
+                      required={{true}}
+                      rows="3"
+                      {{on "input" @controller.updateRecipientAddress}}
+                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; resize: vertical;"
+                    ></textarea>
+                  </div>
+                {{else}}
+                  <div
+                    class="virtual-delivery-hint"
+                    style="padding: 12px; background: var(--primary-very-low); border-radius: 4px; color: var(--primary-medium);"
+                  >
+                    {{i18n "points_mall.products.virtual_delivery_hint"}}
+                  </div>
+                {{/if}}
 
                 <div>
                   <label style="display: block; margin-bottom: 4px; font-weight: 500;">

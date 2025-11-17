@@ -17,6 +17,8 @@ class PointsMall::AdminOrderSerializer < ApplicationSerializer
              :completed_at,
              :shipping_company,
              :shipping_number,
+             :redemption_info,
+             :product_type,
              :created_at,
              :updated_at
 
@@ -33,6 +35,10 @@ class PointsMall::AdminOrderSerializer < ApplicationSerializer
 
   def total_points_spent
     object.total_points_spent
+  end
+
+  def product_type
+    object.product&.product_type || "physical"
   end
 end
 

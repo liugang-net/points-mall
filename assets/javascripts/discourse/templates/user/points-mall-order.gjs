@@ -75,45 +75,62 @@ export default RouteTemplate(
                   {{i18n "points_mall.orders.product"}}:
                   {{@controller.order.product_name}}
                 </p>
-                {{#if @controller.order.product_description}}
-                  <p>{{@controller.order.product_description}}</p>
-                {{/if}}
               </div>
             </div>
           </section>
 
-          <section>
-            <h3>{{i18n "points_mall.user.orders.recipient_info"}}</h3>
-            <dl>
-              <dt>{{i18n "points_mall.orders.recipient_name"}}</dt>
-              <dd>{{@controller.order.recipient_name}}</dd>
-              <dt>{{i18n "points_mall.orders.recipient_phone"}}</dt>
-              <dd>{{@controller.order.recipient_phone}}</dd>
-              <dt>{{i18n "points_mall.orders.recipient_address"}}</dt>
-              <dd>{{@controller.order.recipient_address}}</dd>
-            </dl>
-          </section>
+          {{#if @controller.isVirtualOrder}}
+            <section>
+              <h3>{{i18n "points_mall.orders.redemption_info"}}</h3>
+              {{#if @controller.hasRedemptionInfo}}
+                {{#if @controller.redemptionInfoIsLink}}
+                  <a
+                    href={{@controller.order.redemption_info}}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    class="order-detail__redemption-link"
+                  >
+                    {{@controller.order.redemption_info}}
+                  </a>
+                {{else}}
+                  <p class="order-detail__redemption">
+                    {{@controller.order.redemption_info}}
+                  </p>
+                {{/if}}
+              {{else}}
+                <p class="order-detail__redemption order-detail__redemption--pending">
+                  {{i18n "points_mall.orders.redemption_pending"}}
+                </p>
+              {{/if}}
+            </section>
+          {{else}}
+            <section>
+              <h3>{{i18n "points_mall.user.orders.recipient_info"}}</h3>
+              <dl>
+                <dt>{{i18n "points_mall.orders.recipient_name"}}</dt>
+                <dd>{{@controller.order.recipient_name}}</dd>
+                <dt>{{i18n "points_mall.orders.recipient_phone"}}</dt>
+                <dd>{{@controller.order.recipient_phone}}</dd>
+                <dt>{{i18n "points_mall.orders.recipient_address"}}</dt>
+                <dd>{{@controller.order.recipient_address}}</dd>
+              </dl>
+            </section>
 
-          {{#if (or @controller.order.shipping_company @controller.order.shipping_number)}}
             <section>
               <h3>{{i18n "points_mall.user.orders.shipping_info"}}</h3>
               <dl>
-                {{#if @controller.order.shipping_company}}
-                  <dt>{{i18n "points_mall.orders.shipping_company"}}</dt>
-                  <dd>{{@controller.order.shipping_company}}</dd>
-                {{/if}}
-                {{#if @controller.order.shipping_number}}
-                  <dt>{{i18n "points_mall.orders.shipping_number"}}</dt>
-                  <dd>{{@controller.order.shipping_number}}</dd>
-                {{/if}}
+                <dt>{{i18n "points_mall.orders.shipping_company"}}</dt>
+                <dd>{{@controller.order.shipping_company}}</dd>
+                <dt>{{i18n "points_mall.orders.shipping_number"}}</dt>
+                <dd>{{@controller.order.shipping_number}}</dd>
               </dl>
             </section>
           {{/if}}
 
-          {{#if @controller.order.user_notes}}
+          {{#if @controller.order.admin_notes}}
             <section>
-              <h3>{{i18n "points_mall.orders.user_notes"}}</h3>
-              <p>{{@controller.order.user_notes}}</p>
+              <h3>{{i18n "points_mall.orders.admin_notes"}}</h3>
+              <p>{{@controller.order.admin_notes}}</p>
             </section>
           {{/if}}
         </div>

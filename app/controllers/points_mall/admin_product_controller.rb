@@ -46,7 +46,7 @@ class PointsMall::AdminProductController < Admin::AdminController
 
   def create
     params.require(%i[name points_required stock])
-    params.permit(%i[description upload_id active sort_order])
+    params.permit(%i[description upload_id active sort_order product_type])
 
     product =
       PointsMall::Product.new(
@@ -58,6 +58,7 @@ class PointsMall::AdminProductController < Admin::AdminController
         active: params[:active] != false,
         sort_order: params[:sort_order] || 0,
         created_by_id: current_user.id,
+        product_type: params[:product_type].presence || "physical",
       )
 
     if product.save
@@ -70,7 +71,16 @@ class PointsMall::AdminProductController < Admin::AdminController
   def update
     params.require(:id)
     params.permit(
-      %i[name description upload_id stock points_required active sort_order],
+      %i[
+        name
+        description
+        upload_id
+        stock
+        points_required
+        active
+        sort_order
+        product_type
+      ],
     )
 
     product = PointsMall::Product.find_by(id: params[:id])
@@ -83,6 +93,7 @@ class PointsMall::AdminProductController < Admin::AdminController
     product.points_required = params[:points_required] if params[:points_required].present?
     product.active = params[:active] if params.key?(:active)
     product.sort_order = params[:sort_order] if params[:sort_order].present?
+    product.product_type = params[:product_type] if params[:product_type].present?
 
     if product.save
       render_serialized(product, PointsMall::AdminProductSerializer, root: false)

@@ -25,16 +25,27 @@ export default class PointsMallProductsController extends Controller {
     @tracked userNotes = "";
     @tracked loading = false;
 
+    get requiresShipping() {
+        if (!this.selectedProduct) {
+            return true;
+        }
+
+        return this.selectedProduct.product_type !== "virtual";
+    }
+
     get canExchange() {
         if (!this.selectedProduct) return false;
         const requiredPoints = this.selectedProduct.points_required * this.exchangeQuantity;
+        const needsShipping = this.requiresShipping;
+
         return (
             this.selectedProduct.can_purchase &&
             this.selectedProduct.stock >= this.exchangeQuantity &&
             this.userScore >= requiredPoints &&
-            this.recipientName.trim() &&
-            this.recipientPhone.trim() &&
-            this.recipientAddress.trim()
+            (!needsShipping ||
+                (this.recipientName.trim() &&
+                    this.recipientPhone.trim() &&
+                    this.recipientAddress.trim()))
         );
     }
 
@@ -141,7 +152,12 @@ export default class PointsMallProductsController extends Controller {
                 return;
             }
 
-            if (!this.recipientName.trim() || !this.recipientPhone.trim() || !this.recipientAddress.trim()) {
+            if (
+                this.requiresShipping &&
+                (!this.recipientName.trim() ||
+                    !this.recipientPhone.trim() ||
+                    !this.recipientAddress.trim())
+            ) {
                 this.toasts.error({
                     duration: 3000,
                     data: {
@@ -154,16 +170,21 @@ export default class PointsMallProductsController extends Controller {
 
         this.loading = true;
         try {
+            const payload = {
+                product_id: this.selectedProduct.id,
+                quantity: this.exchangeQuantity,
+                user_notes: this.userNotes.trim() || null,
+            };
+
+            if (this.requiresShipping) {
+                payload.recipient_name = this.recipientName.trim();
+                payload.recipient_phone = this.recipientPhone.trim();
+                payload.recipient_address = this.recipientAddress.trim();
+            }
+
             const response = await ajax("/points-mall/orders", {
                 type: "POST",
-                data: {
-                    product_id: this.selectedProduct.id,
-                    quantity: this.exchangeQuantity,
-                    recipient_name: this.recipientName.trim(),
-                    recipient_phone: this.recipientPhone.trim(),
-                    recipient_address: this.recipientAddress.trim(),
-                    user_notes: this.userNotes.trim() || null,
-                },
+                data: payload,
             });
 
             // 更新用户积分（从后端返回的最新积分）

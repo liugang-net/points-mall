@@ -9,11 +9,14 @@ class PointsMall::OrderSerializer < ApplicationSerializer
              :status,
              :shipping_company,
              :shipping_number,
+             :redemption_info,
+             :product_type,
              :product_name,
              :product_description,
              :recipient_name,
              :recipient_phone,
              :recipient_address,
+             :admin_notes,
              :user_notes,
              :shipped_at,
              :completed_at,
@@ -39,6 +42,10 @@ class PointsMall::OrderSerializer < ApplicationSerializer
     @user_score_cache[object.user_id] ||= begin
       DiscourseGamification::GamificationScore.where(user_id: object.user_id).sum(:score) || 0
     end
+  end
+
+  def product_type
+    object.product&.product_type || "physical"
   end
 
   def product_name

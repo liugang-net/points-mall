@@ -28,8 +28,11 @@ zh_CN:
         cannot_complete: "订单状态不允许完成"
         cannot_cancel: "订单状态不允许取消"
         refund_description: "订单取消，返还积分：%{product_name}"
+        shipping_info_required: "请填写快递公司和快递单号。"
+        redemption_info_required: "虚拟商品需要先填写提货信息后才能标记为已发货。"
     orders:
       product_unavailable: "商品不可用或库存不足"
       insufficient_points: "积分不足，需要 %{required} 积分，当前有 %{current} 积分"
       purchase_description: "兑换商品：%{product_name} x %{quantity}"
+      missing_recipient_info: "请填写完整的收件人姓名、电话和地址。"
 
