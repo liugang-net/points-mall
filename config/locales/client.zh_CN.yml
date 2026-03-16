@@ -182,8 +182,8 @@ zh_CN:
         redemption_pending: "提货信息将在订单处理完成后提供。"
       user:
         orders:
-          nav: "点数订单"
-          title: "我的点数订单"
+          nav: "积分订单"
+          title: "我的积分订单"
           view_details: "查看详情"
           back: "返回订单列表"
           status_filter: "订单状态"
