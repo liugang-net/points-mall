@@ -3,11 +3,11 @@ zh_CN:
     admin:
       site_settings:
         categories:
-          points_mall: "点数商城"
+          points_mall: "积分商城"
   js:
     points_mall:
       admin:
-        title: "点数商城"
+        title: "积分商城"
         test:
           title: "测试页面"
           description: "这是一个简单的测试页面，不涉及任何数据操作。"
@@ -129,7 +129,7 @@ zh_CN:
           prev: "上一页"
           next: "下一页"
       products:
-        title: "点数商城"
+        title: "积分商城"
         my_points: "我的点数"
         login_required: "请先登录后再进行兑换"
         points_required: "所需点数"
