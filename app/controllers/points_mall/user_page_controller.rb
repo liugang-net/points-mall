@@ -8,3 +8,4 @@ class PointsMall::UserPageController < ::ApplicationController
   end
 end
 
+
