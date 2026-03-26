@@ -1,17 +1,19 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
+import { fn } from "@ember/helper";
+import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
-import { on } from "@ember/modifier";
+import DButton from "discourse/components/d-button";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
-import DButton from "discourse/components/d-button";
 
 export default class AdminScoreEventForm extends Component {
-  @service currentUser;
+  @service dialog;
 
   @tracked userId = "";
+  @tracked username = "";
   @tracked date = "";
   @tracked points = "";
   @tracked description = "";
@@ -24,6 +26,7 @@ export default class AdminScoreEventForm extends Component {
     if (this.args.event) {
       // 编辑模式
       this.userId = this.args.event.user_id?.toString() || "";
+      this.username = this.args.event.user?.username || "";
       this.date = this.args.event.date || "";
       this.points = this.args.event.points?.toString() || "";
       this.description = this.args.event.description || "";
@@ -68,24 +71,27 @@ export default class AdminScoreEventForm extends Component {
   @action
   selectUser(user) {
     this.userId = user.id.toString();
+    this.username = user.username || "";
     this.userResults = [];
   }
 
   @action
   async submit() {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
 
     // 验证
-    if (!this.userId) {
-      alert(i18n("points_mall.admin.score_events.user_id_required"));
+    if (!this.userId && !this.username) {
+      this.dialog.alert(i18n("points_mall.admin.score_events.user_required"));
       return;
     }
     if (!this.date) {
-      alert(i18n("points_mall.admin.score_events.date_required"));
+      this.dialog.alert(i18n("points_mall.admin.score_events.date_required"));
       return;
     }
-    if (!this.points || isNaN(parseInt(this.points))) {
-      alert(i18n("points_mall.admin.score_events.points_required"));
+    if (!this.points || isNaN(parseInt(this.points, 10))) {
+      this.dialog.alert(i18n("points_mall.admin.score_events.points_required"));
       return;
     }
 
@@ -93,11 +99,16 @@ export default class AdminScoreEventForm extends Component {
 
     try {
       const data = {
-        user_id: parseInt(this.userId),
         date: this.date,
-        points: parseInt(this.points),
+        points: parseInt(this.points, 10),
         description: this.description,
       };
+
+      if (this.userId) {
+        data.user_id = parseInt(this.userId, 10);
+      } else if (this.username) {
+        data.username = this.username;
+      }
 
       if (this.isEditMode) {
         await this.args.onUpdate(this.args.event.id, data);
@@ -119,6 +130,21 @@ export default class AdminScoreEventForm extends Component {
   @action
   updateUserId(event) {
     this.userId = event.target.value;
+    if (this.userId) {
+      this.username = "";
+      this.userResults = [];
+    }
+  }
+
+  @action
+  updateUsername(event) {
+    this.username = event.target.value;
+    if (this.username) {
+      this.userId = "";
+      this.searchUsers(this.username);
+    } else {
+      this.userResults = [];
+    }
   }
 
   @action
@@ -137,16 +163,6 @@ export default class AdminScoreEventForm extends Component {
   }
 
   <template>
-    <style>
-      .score-event-form-container .score-event-form-input:focus {
-        border-color: var(--tertiary) !important;
-        outline: none;
-      }
-      .score-event-form-container .score-event-form-input:focus-visible {
-        outline: 2px solid var(--tertiary);
-        outline-offset: 2px;
-      }
-    </style>
     <div
       class="score-event-form-container"
       style="
@@ -177,7 +193,7 @@ export default class AdminScoreEventForm extends Component {
         <div
           style="
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
           "
         >
@@ -198,7 +214,6 @@ export default class AdminScoreEventForm extends Component {
                 value={{this.userId}}
                 placeholder={{i18n "points_mall.admin.score_events.user_id"}}
                 disabled={{this.isEditMode}}
-                required={{true}}
                 {{on "input" this.updateUserId}}
                 class="score-event-form-input"
                 style="
@@ -212,6 +227,81 @@ export default class AdminScoreEventForm extends Component {
                 "
               />
             </label>
+          </div>
+
+          <div class="form-row" style="position: relative;">
+            <label
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-weight: 500;
+                color: var(--primary);
+                font-size: 14px;
+              "
+            >
+              {{i18n "points_mall.admin.score_events.username"}}
+              <input
+                type="text"
+                value={{this.username}}
+                placeholder={{i18n "points_mall.admin.score_events.username"}}
+                disabled={{this.isEditMode}}
+                {{on "input" this.updateUsername}}
+                class="score-event-form-input"
+                style="
+                  padding: 10px 12px;
+                  border: 1px solid var(--primary-low);
+                  border-radius: 4px;
+                  font-size: 14px;
+                  background: var(--secondary);
+                  color: var(--primary);
+                  transition: border-color 0.2s;
+                "
+              />
+            </label>
+
+            {{#if this.userResults.length}}
+              <div
+                class="score-event-form-user-results"
+                style="
+                  position: absolute;
+                  top: calc(100% + 4px);
+                  left: 0;
+                  right: 0;
+                  background: var(--secondary);
+                  border: 1px solid var(--primary-low);
+                  border-radius: 4px;
+                  max-height: 240px;
+                  overflow: auto;
+                  z-index: 10;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+                "
+              >
+                {{#each this.userResults as |user|}}
+                  <button
+                    type="button"
+                    {{on "click" (fn this.selectUser user)}}
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      width: 100%;
+                      padding: 10px 12px;
+                      border: 0;
+                      background: transparent;
+                      text-align: left;
+                      cursor: pointer;
+                    "
+                  >
+                    <span style="color: var(--primary); font-weight: 500;">
+                      {{user.username}}
+                    </span>
+                    <span style="color: var(--primary-medium);">
+                      #{{user.id}}
+                    </span>
+                  </button>
+                {{/each}}
+              </div>
+            {{/if}}
           </div>
 
           <div class="form-row">
@@ -350,4 +440,3 @@ export default class AdminScoreEventForm extends Component {
     </div>
   </template>
 }
-

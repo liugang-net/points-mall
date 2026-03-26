@@ -1,16 +1,16 @@
 zh_CN:
   site_settings:
-    points_mall_enabled: "启用积分商城插件。此插件提供管理点数事件和积分商城功能。"
+    points_mall_enabled: "启用积分商城插件。此插件提供管理积分事件和积分商城功能。"
 
   points_mall:
     admin:
       title: "游戏化扩展"
       score_events:
         title: "积分事件"
-        not_found: "未找到点数事件"
-        create_error: "创建点数事件失败"
-        update_error: "更新点数事件失败"
-        delete_error: "删除点数事件失败"
+        not_found: "未找到积分事件"
+        create_error: "创建积分事件失败"
+        update_error: "更新积分事件失败"
+        delete_error: "删除积分事件失败"
         invalid_params: "提供的参数无效"
         user_not_found: "用户未找到"
         manual_adjustment: "管理员手动调整"
@@ -27,12 +27,12 @@ zh_CN:
         cannot_ship: "订单状态不允许发货"
         cannot_complete: "订单状态不允许完成"
         cannot_cancel: "订单状态不允许取消"
-        refund_description: "订单取消，返还点数：%{product_name}"
+        refund_description: "订单取消，返还积分：%{product_name}"
         shipping_info_required: "请填写快递公司和快递单号。"
         redemption_info_required: "虚拟商品需要先填写提货信息后才能标记为已发货。"
     orders:
       product_unavailable: "商品不可用或库存不足"
-      insufficient_points: "点数不足，需要 %{required} 点数，当前有 %{current} 点数"
+      insufficient_points: "积分不足，需要 %{required} 积分，当前有 %{current} 积分"
       purchase_description: "兑换商品：%{product_name} x %{quantity}"
       missing_recipient_info: "请填写完整的收件人姓名、电话和地址。"
 
