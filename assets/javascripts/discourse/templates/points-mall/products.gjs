@@ -8,41 +8,43 @@ export default RouteTemplate(
   <template>
     <div class="points-mall-products">
       <div class="points-mall-products__header">
-        <h1>{{i18n "points_mall.products.title"}}</h1>
+        <h1 class="sr-only">{{i18n "points_mall.products.title"}}</h1>
         {{#if @controller.currentUser}}
           <div class="points-mall-products__score">
-            {{i18n "points_mall.products.my_points"}}: <strong>{{@controller.formattedUserScore}}</strong>
+            <span>{{i18n "points_mall.products.my_points"}}</span>
+            <strong>{{@controller.formattedUserScore}}</strong>
           </div>
         {{/if}}
       </div>
 
       {{#if @controller.products.length}}
-        <div class="points-mall-products__grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div class="points-mall-products__grid">
           {{#each @controller.products as |product|}}
-            <div class="points-mall-product-card" style="border: 1px solid var(--primary-low); border-radius: 8px; padding: 16px; background: var(--secondary);">
+            <div class="points-mall-product-card">
               {{#if product.upload}}
-                <div class="product-card__image" style="margin-bottom: 12px;">
-                  <img src={{product.upload.url}} alt={{product.name}} style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;" />
+                <div class="points-mall-product-card__image">
+                  <img src={{product.upload.url}} alt={{product.name}} />
                 </div>
               {{/if}}
-              <div class="product-card__content">
-                <h3 class="product-card__name" style="margin-top: 0; margin-bottom: 8px;">{{product.name}}</h3>
+              <div class="points-mall-product-card__content">
+                <h3 class="points-mall-product-card__name">{{product.name}}</h3>
                 {{#if product.description}}
-                  <p class="product-card__description" style="color: var(--primary-medium); margin-bottom: 12px;">{{product.description}}</p>
+                  <p class="points-mall-product-card__description">{{product.description}}</p>
                 {{/if}}
-                <div class="product-card__info" style="margin-bottom: 16px;">
-                  <div class="product-card__points" style="margin-bottom: 4px;">
-                    {{i18n "points_mall.products.points_required"}}: <strong>{{product.formattedPointsRequired}}</strong>
+                <div class="points-mall-product-card__info">
+                  <div class="points-mall-product-card__points">
+                    <span>{{i18n "points_mall.products.points_required"}}</span>
+                    <strong>{{product.formattedPointsRequired}}</strong>
                   </div>
-                  <div class="product-card__stock">
-                    {{i18n "points_mall.products.stock"}}: <strong>{{product.stock}}</strong>
+                  <div class="points-mall-product-card__stock">
+                    <span>{{i18n "points_mall.products.stock"}}</span>
+                    <strong>{{product.stock}}</strong>
                   </div>
                 </div>
                 <DButton
                   @label="points_mall.products.exchange"
                   @action={{fn @controller.showExchange product}}
-                  class="btn-primary"
-                  style="width: 100%;"
+                  class="btn-primary points-mall-product-card__exchange-btn"
                 />
               </div>
             </div>
@@ -180,4 +182,3 @@ export default RouteTemplate(
     </div>
   </template>
 );
-
