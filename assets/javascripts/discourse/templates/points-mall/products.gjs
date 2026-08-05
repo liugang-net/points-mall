@@ -1,7 +1,9 @@
-import { fn } from "@ember/helper";
+import { array, concat, fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import RouteTemplate from "ember-route-template";
 import DButton from "discourse/components/d-button";
+import icon from "discourse/helpers/d-icon";
+import { eq } from "discourse/truth-helpers";
 import { i18n } from "discourse-i18n";
 
 export default RouteTemplate(
@@ -17,15 +19,35 @@ export default RouteTemplate(
         {{/if}}
       </div>
 
+      <nav class="points-mall-products__filters" aria-label={{i18n "points_mall.products.filter_label"}}>
+        {{#each (array "all" "virtual" "physical") as |productType|}}
+          <button
+            type="button"
+            class={{if
+              (eq @controller.productTypeFilter productType)
+              "points-mall-products__filter is-active"
+              "points-mall-products__filter"
+            }}
+            aria-pressed={{if (eq @controller.productTypeFilter productType) "true" "false"}}
+            {{on "click" (fn @controller.setProductTypeFilter productType)}}
+          >
+            {{i18n (concat "points_mall.products.filter_" productType)}}
+          </button>
+        {{/each}}
+      </nav>
+
       {{#if @controller.products.length}}
         <div class="points-mall-products__grid">
-          {{#each @controller.products as |product|}}
+          {{#each @controller.filteredProducts as |product|}}
             <div class="points-mall-product-card">
-              {{#if product.upload}}
-                <div class="points-mall-product-card__image">
+              <div class="points-mall-product-card__image">
+                <span class="points-mall-product-card__stock">
+                  {{i18n "points_mall.products.stock"}}-<strong>{{product.stock}}</strong>
+                </span>
+                {{#if product.upload}}
                   <img src={{product.upload.url}} alt={{product.name}} />
-                </div>
-              {{/if}}
+                {{/if}}
+              </div>
               <div class="points-mall-product-card__content">
                 <h3 class="points-mall-product-card__name">{{product.name}}</h3>
                 {{#if product.description}}
@@ -33,12 +55,11 @@ export default RouteTemplate(
                 {{/if}}
                 <div class="points-mall-product-card__info">
                   <div class="points-mall-product-card__points">
-                    <span>{{i18n "points_mall.products.points_required"}}</span>
+                    {{icon "ibomy-points"}}
                     <strong>{{product.formattedPointsRequired}}</strong>
-                  </div>
-                  <div class="points-mall-product-card__stock">
-                    <span>{{i18n "points_mall.products.stock"}}</span>
-                    <strong>{{product.stock}}</strong>
+                    <span class="points-mall-product-card__points-unit">
+                      {{i18n "points_mall.products.points_unit"}}
+                    </span>
                   </div>
                 </div>
                 <DButton
@@ -57,126 +78,118 @@ export default RouteTemplate(
       {{/if}}
 
       {{#if @controller.showExchangeModal}}
-        <div class="exchange-modal-overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-          <div class="exchange-modal" style="background: var(--secondary); padding: 24px; border-radius: 8px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2 style="margin-top: 0;">{{i18n "points_mall.products.exchange_confirm"}}</h2>
-            
+        <div class="exchange-modal-overlay" role="presentation">
+          <section class="exchange-modal" role="dialog" aria-modal="true" aria-labelledby="exchange-modal-title">
+            <header class="exchange-modal__header">
+              <h2 id="exchange-modal-title">{{i18n "points_mall.products.exchange_confirm"}}</h2>
+              <button
+                type="button"
+                class="exchange-modal__close"
+                aria-label={{i18n "points_mall.admin.products.cancel"}}
+                {{on "click" @controller.hideExchange}}
+              >×</button>
+            </header>
+
             {{#if @controller.selectedProduct}}
               <div class="exchange-modal__product">
-                <h3>{{@controller.selectedProduct.name}}</h3>
-                <div>
-                  {{i18n "points_mall.products.points_required"}}: {{@controller.selectedProduct.formattedPointsRequired}} × {{@controller.exchangeQuantity}} = {{@controller.formattedTotalPointsRequired}}
+                <div class="exchange-modal__product-image">
+                  {{#if @controller.selectedProduct.upload}}
+                    <img src={{@controller.selectedProduct.upload.url}} alt={{@controller.selectedProduct.name}} />
+                  {{/if}}
+                </div>
+                <div class="exchange-modal__product-summary">
+                  <div class="exchange-modal__product-heading">
+                    <h3>{{@controller.selectedProduct.name}}</h3>
+                    <div class="exchange-modal__quantity">
+                      <button type="button" {{on "click" @controller.decreaseQuantity}}>−</button>
+                      <input
+                        aria-label={{i18n "points_mall.products.quantity"}}
+                        type="number"
+                        value={{@controller.exchangeQuantity}}
+                        min="1"
+                        max={{@controller.selectedProduct.stock}}
+                        {{on "input" @controller.updateQuantity}}
+                      />
+                      <button type="button" {{on "click" @controller.increaseQuantity}}>+</button>
+                    </div>
+                  </div>
+                  <div class="exchange-modal__points">
+                    <span>{{icon "ibomy-points"}}{{i18n "points_mall.products.points_cost"}}</span>
+                    <strong>{{@controller.formattedTotalPointsRequired}}</strong>
+                  </div>
                 </div>
               </div>
 
-              <div class="exchange-modal__form" style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.products.quantity"}}
-                  </label>
-                  <input
-                    type="number"
-                    value={{@controller.exchangeQuantity}}
-                    min="1"
-                    max={{@controller.selectedProduct.stock}}
-                    {{on "input" @controller.updateQuantity}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
-                  />
-                </div>
-
+              <div class="exchange-modal__form">
                 {{#if @controller.requiresShipping}}
-                  <div>
-                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                      {{i18n "points_mall.products.recipient_name"}} <span style="color: red;">*</span>
-                    </label>
+                  <div class="exchange-modal__shipping-title">
+                    <span class="exchange-modal__location">{{icon "ibomy-address"}}</span>
+                    {{i18n "points_mall.products.shipping_title"}}
+                  </div>
+                  <div class="exchange-modal__shipping-fields">
+                    <label>
+                      <span><b>*</b>{{i18n "points_mall.products.recipient_name"}}</span>
                     <input
                       type="text"
                       value={{@controller.recipientName}}
                       placeholder={{i18n "points_mall.products.recipient_name"}}
                       required={{true}}
                       {{on "input" @controller.updateRecipientName}}
-                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
                     />
-                  </div>
-
-                  <div>
-                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                      {{i18n "points_mall.products.recipient_phone"}} <span style="color: red;">*</span>
                     </label>
+                    <label>
+                      <span><b>*</b>{{i18n "points_mall.products.recipient_phone"}}</span>
                     <input
-                      type="text"
+                      type="tel"
                       value={{@controller.recipientPhone}}
                       placeholder={{i18n "points_mall.products.recipient_phone"}}
                       required={{true}}
                       {{on "input" @controller.updateRecipientPhone}}
-                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px;"
                     />
-                  </div>
-
-                  <div>
-                    <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                      {{i18n "points_mall.products.recipient_address"}} <span style="color: red;">*</span>
                     </label>
-                    <textarea
+                    <label>
+                      <span><b>*</b>{{i18n "points_mall.products.recipient_address"}}</span>
+                    <input
+                      type="text"
                       value={{@controller.recipientAddress}}
                       placeholder={{i18n "points_mall.products.recipient_address"}}
                       required={{true}}
-                      rows="3"
                       {{on "input" @controller.updateRecipientAddress}}
-                      style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; resize: vertical;"
-                    ></textarea>
+                    />
+                    </label>
                   </div>
                 {{else}}
-                  <div
-                    class="virtual-delivery-hint"
-                    style="padding: 12px; background: var(--primary-very-low); border-radius: 4px; color: var(--primary-medium);"
-                  >
+                  <div class="virtual-delivery-hint">
                     {{i18n "points_mall.products.virtual_delivery_hint"}}
                   </div>
                 {{/if}}
 
-                <div>
-                  <label style="display: block; margin-bottom: 4px; font-weight: 500;">
-                    {{i18n "points_mall.products.user_notes"}}
-                  </label>
+                <label class="exchange-modal__notes">
+                  <strong>{{i18n "points_mall.products.user_notes"}}</strong>
+                  <span class="exchange-modal__notes-field">
                   <textarea
                     value={{@controller.userNotes}}
                     placeholder={{i18n "points_mall.products.user_notes"}}
                     rows="2"
+                    maxlength="50"
                     {{on "input" @controller.updateUserNotes}}
-                    style="width: 100%; padding: 8px; border: 1px solid var(--primary-low); border-radius: 4px; resize: vertical;"
                   ></textarea>
-                </div>
-
-                <div style="padding: 12px; background: var(--primary-low); border-radius: 4px;">
-                  <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                    <span>{{i18n "points_mall.products.total_points"}}:</span>
-                    <strong>{{@controller.formattedTotalPointsRequired}}</strong>
-                  </div>
-                  <div style="display: flex; justify-content: space-between;">
-                    <span>{{i18n "points_mall.products.my_points"}}:</span>
-                    <strong>{{@controller.formattedUserScore}}</strong>
-                  </div>
-                </div>
+                    <small>{{@controller.notesLength}}/50</small>
+                  </span>
+                </label>
               </div>
 
-              <div style="display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end;">
+              <footer class="exchange-modal__footer">
                 <DButton
-                  @label="points_mall.admin.products.cancel"
-                  @action={{@controller.hideExchange}}
-                  @disabled={{@controller.loading}}
-                  class="btn-default"
-                />
-                <DButton
-                  @label="points_mall.products.exchange"
+                  @translatedLabel={{@controller.confirmButtonLabel}}
                   @action={{@controller.confirmExchange}}
-                  @disabled={{@controller.loading}}
-                  class="btn-primary"
+                  @disabled={{@controller.confirmDisabled}}
+                  class={{if @controller.hasEnoughPoints "exchange-modal__submit" "exchange-modal__submit is-insufficient"}}
                   title={{@controller.exchangeButtonTitle}}
                 />
-              </div>
+              </footer>
             {{/if}}
-          </div>
+          </section>
         </div>
       {{/if}}
     </div>

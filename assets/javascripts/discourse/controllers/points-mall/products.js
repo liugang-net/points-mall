@@ -15,6 +15,7 @@ export default class PointsMallProductsController extends Controller {
     @service toasts;
 
     @tracked products = [];
+    @tracked productTypeFilter = "all";
     @tracked userScore = 0;
     @tracked selectedProduct = null;
     @tracked showExchangeModal = false;
@@ -24,6 +25,21 @@ export default class PointsMallProductsController extends Controller {
     @tracked recipientAddress = "";
     @tracked userNotes = "";
     @tracked loading = false;
+
+    get filteredProducts() {
+        if (this.productTypeFilter === "all") {
+            return this.products;
+        }
+
+        return this.products.filter(
+            product => product.product_type === this.productTypeFilter
+        );
+    }
+
+    @action
+    setProductTypeFilter(productType) {
+        this.productTypeFilter = productType;
+    }
 
     get requiresShipping() {
         if (!this.selectedProduct) {
@@ -47,6 +63,26 @@ export default class PointsMallProductsController extends Controller {
                     this.recipientPhone.trim() &&
                     this.recipientAddress.trim()))
         );
+    }
+
+    get hasEnoughPoints() {
+        return this.userScore >= this.totalPointsRequired;
+    }
+
+    get confirmDisabled() {
+        return this.loading || !this.canExchange;
+    }
+
+    get confirmButtonLabel() {
+        if (!this.hasEnoughPoints) {
+            return i18n("points_mall.products.insufficient_points_short");
+        }
+
+        return i18n("points_mall.products.exchange_now");
+    }
+
+    get notesLength() {
+        return this.userNotes.length;
     }
 
     get totalPointsRequired() {
@@ -247,6 +283,17 @@ export default class PointsMallProductsController extends Controller {
     }
 
     @action
+    decreaseQuantity() {
+        this.exchangeQuantity = Math.max(1, this.exchangeQuantity - 1);
+    }
+
+    @action
+    increaseQuantity() {
+        const max = this.selectedProduct?.stock || 1;
+        this.exchangeQuantity = Math.min(max, this.exchangeQuantity + 1);
+    }
+
+    @action
     updateRecipientName(event) {
         this.recipientName = event.target.value;
     }
@@ -266,4 +313,3 @@ export default class PointsMallProductsController extends Controller {
         this.userNotes = event.target.value;
     }
 }
-
