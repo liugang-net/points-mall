@@ -96,6 +96,556 @@
 }
 
 @font-face {
+    font-family: "Ibomy Unbounded Sans";
+    src: url("https://cdn.ibomy.com/static/fonts/LogoSC-UnboundedSans.woff2") format("woff2");
+    font-display: swap;
+    font-style: normal;
+    font-weight: 400 950;
+}
+
+.points-mall-intro {
+    --points-mall-intro-pink: #ff2df4;
+    --points-mall-intro-yellow: #fffb00;
+    --points-mall-intro-cyan: #24dedc;
+    --points-mall-intro-tile: url("https://cdn.ibomy.com/static/images/common/tile.png") left top / 10px 10px repeat;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #fff;
+    color: #050505;
+    font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    &__hero {
+        position: relative;
+        z-index: 1;
+        padding: 34px 16px 0;
+        background: var(--points-mall-intro-yellow) var(--points-mall-intro-tile);
+
+        &::after {
+            position: absolute;
+            z-index: -1;
+            right: 0;
+            bottom: -34px;
+            left: 0;
+            height: 35px;
+            background: var(--points-mall-intro-yellow) var(--points-mall-intro-tile);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            content: "";
+        }
+    }
+
+    &__hero-content {
+        text-align: center;
+
+        h1 {
+            margin: 0;
+            color: var(--points-mall-intro-pink);
+            font-family: "Ibomy Unbounded Sans", Arial, "PingFang SC", sans-serif;
+            font-size: 30px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+    }
+
+    &__hero-copy {
+        margin: 17px 0 0;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.55;
+    }
+
+    &__hero-characters {
+        width: 91%;
+        margin: 22px auto 0;
+    }
+
+    &__hero-note {
+        margin: 3px -4px 13px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+
+    &__earn-card {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+        min-height: 116px;
+        padding: 17px 12px 13px;
+        border: 3px solid #050505;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 4px 0 #050505;
+
+        strong {
+            font-size: 17px;
+            font-weight: 900;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        em {
+            color: var(--points-mall-intro-pink);
+            font-size: 31px;
+            font-style: normal;
+            line-height: 1;
+
+            small {
+                font-size: 17px;
+            }
+        }
+
+        span {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+    }
+
+    &__texture {
+        padding-top: 66px;
+        background: #fff var(--points-mall-intro-tile);
+    }
+
+    &__section {
+        padding: 0 16px;
+
+        h2,
+        .points-mall-intro__faq h2 {
+            margin: 0;
+            font-family: "Ibomy Unbounded Sans", Arial, "PingFang SC", sans-serif;
+            font-size: 28px;
+            font-weight: 950;
+            line-height: 1.15;
+            text-align: center;
+        }
+    }
+
+    &__section-lead {
+        margin: 18px 0 0;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.55;
+        text-align: center;
+    }
+
+    &__rules {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 29px 0 24px;
+        padding: 0;
+        list-style: none;
+
+        li {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        img {
+            flex: 0 0 39px;
+            width: 39px;
+            height: 39px;
+            margin-right: 16px;
+        }
+
+        strong {
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.45;
+        }
+    }
+
+    &__trade-link {
+        position: relative;
+        display: block;
+        margin: 0 -10px;
+
+        &:focus-visible {
+            outline: 3px solid var(--points-mall-intro-pink);
+            outline-offset: 3px;
+        }
+
+        &:hover .points-mall-intro__trade-button,
+        &:focus-visible .points-mall-intro__trade-button {
+            transform: translateY(-2px);
+        }
+    }
+
+    &__trade-banner {
+        width: 100%;
+    }
+
+    &__trade-button {
+        position: absolute;
+        bottom: 2.4%;
+        left: 8.7%;
+        width: 33.1%;
+        transition: transform 150ms ease;
+    }
+
+    &__community {
+        padding-top: 49px;
+
+        .points-mall-intro__section-lead {
+            margin-top: 17px;
+        }
+    }
+
+    &__community-rewards {
+        position: relative;
+        z-index: 2;
+        width: 64%;
+        margin: 22px auto 16px;
+    }
+
+    &__community-showcase {
+        position: relative;
+    }
+
+    &__community-stories {
+        position: relative;
+        margin: 0 -16px;
+        padding: 0 15px 0 14%;
+
+        article {
+            position: relative;
+            z-index: 2;
+            min-height: 116px;
+            padding: 14px 13px 13px;
+            background: rgb(246 246 246 / 90%);
+
+            + article {
+                margin-top: 18px;
+            }
+
+            p {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 1.65;
+            }
+
+            a {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                margin-top: 6px;
+                color: var(--points-mall-intro-pink);
+                font-size: 17px;
+                font-weight: 800;
+                text-decoration: underline;
+
+                .points-mall-intro__link-icon {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+    }
+
+    &__community-character {
+        position: absolute;
+        z-index: 1;
+        top: 28px;
+        left: 0;
+        width: 34%;
+        height: auto;
+        pointer-events: none;
+    }
+
+    &__faq {
+        padding: 55px 16px 42px;
+
+        > h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 29px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid #aaa;
+            font-size: 25px;
+            font-weight: 950;
+            line-height: 1.2;
+
+            > img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        article {
+            margin: 0 0 25px;
+
+            h3 {
+                margin: 0 0 7px;
+                font-size: 15px;
+                font-weight: 900;
+                line-height: 1.4;
+            }
+
+            p {
+                margin: 0;
+                font-size: 13px;
+                font-weight: 500;
+                line-height: 1.55;
+            }
+        }
+    }
+}
+
+body:has(.points-mall-intro) {
+    background: #fff url("https://cdn.ibomy.com/static/images/common/tile.png") left top / 10px 10px repeat;
+}
+
+#main-outlet:has(.points-mall-intro) {
+    --main-outlet-padding-top: 0;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+}
+
+@media (width <= 480px) {
+    .points-mall-intro {
+        &__hero {
+            padding-right: 10px;
+            padding-left: 10px;
+        }
+
+        &__hero-note {
+            font-size: clamp(11px, 3vw, 14px);
+        }
+
+        &__earn-card strong {
+            font-size: clamp(14px, 3.7vw, 17px);
+        }
+
+        &__earn-card em {
+            font-size: clamp(27px, 6.5vw, 31px);
+        }
+
+        &__section {
+            padding-right: 12px;
+            padding-left: 12px;
+        }
+
+        &__section-lead {
+            font-size: clamp(14px, 3.35vw, 16px);
+        }
+
+        &__rules img {
+            margin-right: 11px;
+        }
+
+        &__rules strong {
+            font-size: clamp(12px, 2.9vw, 14px);
+        }
+
+        &__community-stories {
+            margin-right: -12px;
+            margin-left: -12px;
+
+            article p {
+                font-size: clamp(12px, 2.85vw, 13.5px);
+            }
+        }
+    }
+}
+
+@media (width >= 768px) {
+    .points-mall-intro {
+        max-width: 1392px;
+
+        &__hero {
+            padding: 77px 36px 0;
+
+            &::after {
+                bottom: -77px;
+                height: 79px;
+            }
+        }
+
+        &__hero-content h1 {
+            font-size: 68px;
+        }
+
+        &__hero-copy {
+            margin-top: 38px;
+            font-size: 36px;
+        }
+
+        &__hero-characters {
+            margin-top: 50px;
+        }
+
+        &__hero-note {
+            margin: 7px -9px 30px;
+            font-size: 32px;
+        }
+
+        &__earn-card {
+            gap: 20px;
+            min-height: 263px;
+            padding: 38px 27px 30px;
+            border-width: 7px;
+            border-radius: 18px;
+            box-shadow: 0 9px 0 #050505;
+
+            strong {
+                font-size: 38px;
+            }
+
+            em {
+                font-size: 70px;
+
+                small {
+                    font-size: 38px;
+                }
+            }
+
+            span {
+                font-size: 30px;
+            }
+        }
+
+        &__texture {
+            padding-top: 149px;
+        }
+
+        &__section {
+            padding: 0 36px;
+
+            h2,
+            .points-mall-intro__faq h2 {
+                font-size: 63px;
+            }
+        }
+
+        &__section-lead {
+            margin-top: 41px;
+            font-size: 36px;
+        }
+
+        &__rules {
+            gap: 23px;
+            margin: 66px 0 55px;
+
+            li {
+                min-height: 91px;
+            }
+
+            img {
+                flex-basis: 88px;
+                width: 88px;
+                height: 88px;
+                margin-right: 36px;
+            }
+
+            strong {
+                font-size: 32px;
+            }
+        }
+
+        &__trade-link {
+            margin: 0 -23px;
+        }
+
+        &__community {
+            padding-top: 111px;
+
+            .points-mall-intro__section-lead {
+                margin-top: 38px;
+            }
+        }
+
+        &__community-rewards {
+            margin: 50px auto 36px;
+        }
+
+        &__community-stories {
+            margin: 0 -36px;
+            padding: 0 34px 0 14%;
+
+            article {
+                min-height: 263px;
+                padding: 38px 30px 30px;
+
+                + article {
+                    margin-top: 18px;
+                }
+
+                p {
+                    font-size: 36px;
+                }
+
+                a {
+                    gap: 16px;
+                    margin-top: 13px;
+                    font-size: 39px;
+                }
+
+                .points-mall-intro__link-icon {
+                    width: 41px;
+                    height: 41px;
+                }
+            }
+        }
+
+        &__community-character {
+            top: 63px;
+        }
+
+        &__faq {
+            padding: 125px 36px 95px;
+
+            > h2 {
+                gap: 18px;
+                margin-bottom: 66px;
+                padding-bottom: 25px;
+                font-size: 57px;
+
+                > img {
+                    width: 41px;
+                    height: 41px;
+                }
+            }
+
+            article {
+                margin-bottom: 57px;
+
+                h3 {
+                    margin-bottom: 16px;
+                    font-size: 34px;
+                }
+
+                p {
+                    font-size: 30px;
+                }
+            }
+        }
+    }
+}
+
+@font-face {
     font-family: "Ibomy Mall Points";
     src: url("https://cdn.ibomy.com/static/fonts/VonwaonBitmap-16pxLite.ttf") format("truetype");
     font-display: swap;

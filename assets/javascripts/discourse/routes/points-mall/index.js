@@ -1,6 +1,3 @@
-import PointsMallProductsRoute from "./products";
+import DiscourseRoute from "discourse/routes/discourse";
 
-export default class PointsMallIndexRoute extends PointsMallProductsRoute {
-    // index 路由直接使用 products 路由的逻辑
-}
-
+export default class PointsMallIndexRoute extends DiscourseRoute {}
