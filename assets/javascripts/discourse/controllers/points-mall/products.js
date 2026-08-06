@@ -6,7 +6,6 @@ import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import { i18n } from "discourse-i18n";
 import DModal from "discourse/components/d-modal";
-import { number as formatNumber } from "discourse/lib/formatter";
 
 export default class PointsMallProductsController extends Controller {
     @service currentUser;
@@ -92,7 +91,7 @@ export default class PointsMallProductsController extends Controller {
 
     formatNumber(value) {
         if (value == null || isNaN(value)) return "0";
-        return formatNumber(value, { maxDisplay: 1000000 });
+        return Math.round(Number(value)).toString();
     }
 
     get formattedUserScore() {
@@ -254,7 +253,7 @@ export default class PointsMallProductsController extends Controller {
                 const productsData = await ajax("/points-mall/products.json");
                 const formatPoints = (value) => {
                     if (value == null || isNaN(value)) return "0";
-                    return formatNumber(value, { maxDisplay: 1000000 });
+                    return Math.round(Number(value)).toString();
                 };
                 const updatedProducts = (productsData.products || []).map(product => ({
                     ...product,

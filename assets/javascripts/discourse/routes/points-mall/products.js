@@ -2,7 +2,6 @@ import { service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 import DiscourseRoute from "discourse/routes/discourse";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import { number as formatNumber } from "discourse/lib/formatter";
 
 export default class PointsMallProductsRoute extends DiscourseRoute {
     @service site;
@@ -26,7 +25,7 @@ export default class PointsMallProductsRoute extends DiscourseRoute {
         // 为每个商品添加格式化后的积分和可购买状态
         const formatPoints = (value) => {
             if (value == null || isNaN(value)) return "0";
-            return formatNumber(value, { maxDisplay: 1000000 });
+            return Math.round(Number(value)).toString();
         };
         // 只有登录用户才设置积分
         const userScore = this.currentUser?.gamification_score || 0;
@@ -38,4 +37,3 @@ export default class PointsMallProductsRoute extends DiscourseRoute {
         controller.userScore = userScore;
     }
 }
-

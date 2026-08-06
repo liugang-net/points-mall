@@ -740,15 +740,15 @@ body:has(.points-mall-intro) {
         color: #777;
 
         .d-icon {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
         }
 
         strong {
             margin-left: 0;
             color: var(--points-mall-pink);
             font-family: "Ibomy Mall Points", monospace;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
         }
     }
@@ -780,7 +780,7 @@ body:has(.points-mall-intro) {
 
     &__exchange-btn {
         align-self: flex-end;
-        width: 46%;
+        width: 42%;
         min-height: 38px;
         height: 38px;
         padding-top: 0;
@@ -864,15 +864,29 @@ body:has(.points-mall-products) {
             font-size: 12px;
         }
 
-        &__points strong {
-            font-size: 18px;
+        &__points {
+            gap: 5px;
+
+            .d-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            strong {
+                font-size: 16px;
+            }
+        }
+
+        &__points-unit {
+            font-size: 12px;
         }
 
         &__exchange-btn {
+            width: 40%;
             min-height: 30px;
             height: 30px;
             margin-top: -37px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         &:hover {
