@@ -29,13 +29,8 @@ after_initialize do
   )
 
   # 添加用户积分到序列化器
-  # 直接从 gamification_scores 表计算，确保获取最新值（不依赖物化视图）
+  # 直接从默认排行榜积分表计算，确保获取最新值（不依赖物化视图）
   add_to_serializer(:current_user, :gamification_score) do
-    if defined?(DiscourseGamification::GamificationScore)
-      DiscourseGamification::GamificationScore.where(user_id: object.id).sum(:score) || 0
-    else
-      0
-    end
+    PointsMall::UserScoreCalculator.current_score(user_id: object.id)
   end
 end
-

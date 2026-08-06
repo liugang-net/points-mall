@@ -32,10 +32,7 @@ class PointsMall::OrderController < ::ApplicationController
     end
 
     # 检查用户积分是否足够（从数据库直接计算，更安全）
-    user_score = 0
-    if defined?(DiscourseGamification::GamificationScore)
-      user_score = DiscourseGamification::GamificationScore.where(user_id: current_user.id).sum(:score) || 0
-    end
+    user_score = PointsMall::UserScoreCalculator.current_score(user_id: current_user.id)
     required_points = product.points_required * quantity
     if user_score < required_points
       raise Discourse::InvalidParameters.new(
@@ -46,6 +43,9 @@ class PointsMall::OrderController < ::ApplicationController
     # 使用事务创建订单并扣减积分
     order = nil
     ActiveRecord::Base.transaction do
+      # 同一用户的兑换串行执行，避免并发请求重复消费同一份余额。
+      User.lock.find(current_user.id)
+
       # 锁定商品行，防止并发问题
       product = PointsMall::Product.lock.find(product.id)
       unless product.can_purchase?(quantity)
@@ -53,13 +53,11 @@ class PointsMall::OrderController < ::ApplicationController
       end
 
       # 在事务内再次检查用户积分（防止并发问题）
-      if defined?(DiscourseGamification::GamificationScore)
-        current_user_score = DiscourseGamification::GamificationScore.where(user_id: current_user.id).sum(:score) || 0
-        if current_user_score < required_points
-          raise Discourse::InvalidParameters.new(
-            I18n.t("points_mall.orders.insufficient_points", required: required_points, current: current_user_score),
-          )
-        end
+      current_user_score = PointsMall::UserScoreCalculator.current_score(user_id: current_user.id)
+      if current_user_score < required_points
+        raise Discourse::InvalidParameters.new(
+          I18n.t("points_mall.orders.insufficient_points", required: required_points, current: current_user_score),
+        )
       end
 
       # 创建订单
@@ -80,21 +78,19 @@ class PointsMall::OrderController < ::ApplicationController
       product.decrement!(:stock, quantity)
 
       # 创建积分事件（扣减积分）
-      if defined?(DiscourseGamification::GamificationScoreEvent)
-        event_date = Date.today
-        DiscourseGamification::GamificationScoreEvent.create!(
-          user_id: current_user.id,
-          date: event_date,
-          points: -required_points,
-          description: I18n.t("points_mall.orders.purchase_description", product_name: product.name, quantity: quantity),
-        )
+      event_date = Date.today
+      DiscourseGamification::GamificationScoreEvent.create!(
+        user_id: current_user.id,
+        date: event_date,
+        points: -required_points,
+        description: I18n.t("points_mall.orders.purchase_description", product_name: product.name, quantity: quantity),
+      )
 
-        # 重新计算用户积分（只重新计算事件发生当天的积分，更高效）
-        PointsMall::UserScoreCalculator.recalculate_user_score(user_id: current_user.id, date: event_date)
-        # 异步刷新排行榜
-        if defined?(Jobs::RefreshUserLeaderboards)
-          Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: current_user.id)
-        end
+      # 重新计算用户积分（只重新计算事件发生当天的积分，更高效）
+      PointsMall::UserScoreCalculator.recalculate_user_score(user_id: current_user.id, date: event_date)
+      # 异步刷新排行榜
+      if defined?(Jobs::RefreshUserLeaderboards)
+        Jobs.enqueue(Jobs::RefreshUserLeaderboards, user_id: current_user.id)
       end
     end
 
@@ -143,4 +139,3 @@ class PointsMall::OrderController < ::ApplicationController
     render_serialized(order, PointsMall::OrderSerializer, root: false)
   end
 end
-

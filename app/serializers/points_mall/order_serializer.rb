@@ -36,11 +36,9 @@ class PointsMall::OrderSerializer < ApplicationSerializer
 
   # 返回用户当前积分（兑换后的最新积分）
   def user_current_score
-    return 0 unless defined?(DiscourseGamification::GamificationScore)
-
     @user_score_cache ||= {}
     @user_score_cache[object.user_id] ||= begin
-      DiscourseGamification::GamificationScore.where(user_id: object.user_id).sum(:score) || 0
+      PointsMall::UserScoreCalculator.current_score(user_id: object.user_id)
     end
   end
 
@@ -56,4 +54,3 @@ class PointsMall::OrderSerializer < ApplicationSerializer
     object.product&.description
   end
 end
-
