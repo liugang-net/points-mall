@@ -160,6 +160,30 @@
         }
     }
 
+    &__title {
+        position: relative;
+        display: inline-block;
+    }
+
+    &__coming-soon {
+        position: absolute;
+        top: 50%;
+        left: calc(100% + 8px);
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px 3px;
+        border: 2px solid #050505;
+        border-radius: 999px;
+        background: var(--points-mall-intro-pink);
+        color: #fff;
+        font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+        transform: translateY(-50%) rotate(-8deg);
+    }
+
     &__hero-copy {
         margin: 17px 0 0;
         font-size: 16px;
@@ -486,6 +510,13 @@ body:has(.points-mall-intro) {
 
         &__hero-content h1 {
             font-size: 68px;
+        }
+
+        &__coming-soon {
+            left: calc(100% + 16px);
+            padding: 5px 16px 7px;
+            border-width: 3px;
+            font-size: 22px;
         }
 
         &__hero-copy {

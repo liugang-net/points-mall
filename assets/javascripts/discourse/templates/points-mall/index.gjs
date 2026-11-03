@@ -6,7 +6,10 @@ export default <template>
     <main class="points-mall-intro">
       <section class="points-mall-intro__hero">
         <div class="points-mall-intro__hero-content">
-          <h1>Bomi积分</h1>
+          <div class="points-mall-intro__title">
+            <h1>Bomi积分</h1>
+            <span class="points-mall-intro__coming-soon">敬请期待</span>
+          </div>
           <p class="points-mall-intro__hero-copy">
             在 啵咪旗下店铺上购物或向 Bomi 社区作出贡献，<br />即可获得积分。
           </p>
